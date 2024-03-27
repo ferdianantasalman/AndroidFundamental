@@ -36,7 +36,7 @@
                 android:layout_marginStart="10dp"
                 tools:text="@string/user_name"
                 android:textStyle="bold"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
             <TextView
@@ -45,8 +45,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:autoLink="web"
-                android:textSize="14sp"
                 android:textColorLink="@color/blue"
+                android:textSize="14sp"
                 android:textStyle="italic"
                 tools:text="@string/link" />
 

@@ -2,6 +2,8 @@ package com.example.androidfundamental.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.androidfundamental.data.local.SettingPreferences
+import com.example.androidfundamental.data.model.UserGithubResponse
 import com.example.androidfundamental.data.remote.ApiConfig
 import com.example.androidfundamental.utils.Result
 import kotlinx.coroutines.flow.catch
@@ -11,14 +13,14 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel(val pref: SettingPreferences) : ViewModel() {
 
     private val _resultUser = MutableLiveData<Result>()
     val resultUser: LiveData<Result> = _resultUser
 
-    private val _resultUserSearch = MutableLiveData<Result>()
-    val resultUserSearch: LiveData<Result> = _resultUserSearch
+    var user: List<UserGithubResponse.Items> = listOf()
 
+    fun getThemeSetting() = pref.getThemeSetting().asLiveData()
     fun getUserGithub() {
         viewModelScope.launch {
             flow {
@@ -65,5 +67,12 @@ class MainViewModel : ViewModel() {
                 Log.d("JIRLAH", it.items.toString())
             }
         }
+    }
+
+    class Factory(private val pref: SettingPreferences) :
+        ViewModelProvider.NewInstanceFactory() {
+
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            MainViewModel(pref) as T
     }
 }

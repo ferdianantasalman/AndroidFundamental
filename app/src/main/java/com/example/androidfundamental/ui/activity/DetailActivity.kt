@@ -6,15 +6,17 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.androidfundamental.R
 import com.example.androidfundamental.data.model.DetailUserResponse
+import com.example.androidfundamental.data.model.UserGithubResponse
 import com.example.androidfundamental.databinding.ActivityDetailBinding
-import com.example.androidfundamental.databinding.ActivityMainBinding
+import com.example.androidfundamental.helper.ViewModelFactory
 import com.example.androidfundamental.ui.adapter.DetailViewPagerAdapter
 import com.example.androidfundamental.ui.fragment.FollowFragment
 import com.example.androidfundamental.ui.viewmodel.DetailViewModel
@@ -26,19 +28,21 @@ import com.google.android.material.tabs.TabLayoutMediator
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-
-    private val viewModel by viewModels<DetailViewModel>()
+    private lateinit var viewModel: DetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val username = intent.getStringExtra(Constant.ITEM) ?: "ferdi"
+        val item = intent.getParcelableExtra<UserGithubResponse.Items>(Constant.ITEM)
+        val username = item?.login ?: ""
 
         val appBar = supportActionBar
         appBar!!.title = username
         appBar!!.setDisplayHomeAsUpEnabled(true)
+
+        viewModel = obtainViewModel(this@DetailActivity)
 
         viewModel.getDetailUserGithub(username)
 
@@ -66,7 +70,44 @@ class DetailActivity : AppCompatActivity() {
                 is Result.Loading -> {
                     binding.progressBar.isVisible = it.isLoading
                 }
+
+                else -> {
+                    true
+                }
             }
+        }
+
+        viewModel.resultUserFavoriteInsert.observe(this) {
+            Toast.makeText(this, "User ditambahkan sebagai favorite", Toast.LENGTH_SHORT).show()
+            binding.btnFavorite.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_favorite
+                )
+            )
+        }
+
+        viewModel.resultUserFavoriteDelete.observe(this) {
+            Toast.makeText(this, "User dihapuskan dari favorite", Toast.LENGTH_SHORT).show()
+            binding.btnFavorite.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_favorite_border
+                )
+            )
+        }
+
+        binding.btnFavorite.setOnClickListener {
+            viewModel.setUserFavorite(item!!)
+        }
+
+        viewModel.getUserFavoriteById(item?.id ?: 0) {
+            binding.btnFavorite.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_favorite
+                )
+            )
         }
 
         val fragments = mutableListOf<Fragment>(
@@ -105,8 +146,13 @@ class DetailActivity : AppCompatActivity() {
         })
 
 
-        viewModel.getFollowers(username)
+        viewModel.getFollowers(item!!.login)
 
+    }
+
+    private fun obtainViewModel(activity: AppCompatActivity): DetailViewModel {
+        val factory = ViewModelFactory.getInstance(activity.application)
+        return ViewModelProvider(activity, factory).get(DetailViewModel::class.java)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -128,14 +174,14 @@ class DetailActivity : AppCompatActivity() {
     private fun setMode(selectedMode: Int) {
         when (selectedMode) {
             R.id.share -> {
-                val recipeShare = Intent()
-                recipeShare.action = Intent.ACTION_SEND
-                recipeShare.putExtra(
+                val userShare = Intent()
+                userShare.action = Intent.ACTION_SEND
+                userShare.putExtra(
                     Intent.EXTRA_TEXT,
                     "${binding.tvLink.text}"
                 )
-                recipeShare.type = "text/plain"
-                startActivity(Intent.createChooser(recipeShare, "Share To:"))
+                userShare.type = "text/plain"
+                startActivity(Intent.createChooser(userShare, "Share To:"))
             }
         }
     }

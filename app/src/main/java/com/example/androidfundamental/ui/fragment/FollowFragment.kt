@@ -24,7 +24,7 @@ class FollowFragment : Fragment() {
     private val adapter by lazy {
         ListUserAdapter { user ->
             Intent(requireActivity(), DetailActivity::class.java).apply {
-                putExtra(Constant.ITEM, user.login)
+                putExtra(Constant.ITEM, user)
                 startActivity(this)
             }
         }

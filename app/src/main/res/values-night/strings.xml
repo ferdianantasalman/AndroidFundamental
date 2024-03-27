@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="user_name">Usernmae</string>
+
+    <string name="searchbar_hint">Masukkan nama</string>
+    <string name="profile">Profile</string>
+    <string name="followers">Followers</string>
+    <string name="_5">5</string>
+    <string name="following">Following</string>
+    <string name="_1">1</string>
+    <string name="link">link</string>
+    <string name="data_tidak_ditemukan">Data tidak ditemukan</string>
 </resources>

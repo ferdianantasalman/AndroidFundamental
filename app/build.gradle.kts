@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("kotlin-parcelize")
 }
 
@@ -30,7 +30,7 @@ android {
             buildConfigField(
                 "String",
                 "TOKEN",
-                "\"token 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\""
+                "\"token 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\""
             )
         }
         debug {
@@ -38,7 +38,7 @@ android {
             buildConfigField(
                 "String",
                 "TOKEN",
-                "\"token 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\""
+                "\"token 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\""
             )
         }
     }
@@ -64,6 +64,7 @@ dependencies {
 
     // Image
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -81,7 +82,31 @@ dependencies {
     // Lottie
     implementation("com.airbnb.android:lottie:3.7.0")
 
+    // Room
+    implementation("androidx.room:room-runtime:2.5.2")
+    implementation("androidx.test:core-ktx:1.5.0")
+    implementation("androidx.room:room-ktx:2.2.5")
+    ksp("androidx.room:room-compiler:2.5.2")
+
+    // Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+
+    // Data Store
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // Unit Test
+    implementation("androidx.test:core:1.2.0")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("com.google.truth:truth:1.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.2.1")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("org.mockito:mockito-inline:3.11.2")
+    testImplementation("org.mockito:mockito-android:3.11.2")
+
+    androidTestImplementation("com.google.truth:truth:1.4.2")
+    androidTestImplementation("androidx.test:core:1.4.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 }
